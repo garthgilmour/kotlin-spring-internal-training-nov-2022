@@ -1,0 +1,12 @@
+ab12
+12ab
+AB12
+12AB
+cd34
+34cd
+CD34
+34CD
+ef56
+56ef
+EF56
+56EF
