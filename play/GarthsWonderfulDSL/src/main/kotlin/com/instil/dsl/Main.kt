@@ -1,10 +1,17 @@
 package com.instil.dsl
 
 interface Node {
-
+    fun marshall(): String
 }
 
-abstract class ContainerNode<T> : Node {
+abstract class ContentNode(
+    private val tagName: String,
+    private val content: String
+) : Node {
+    override fun marshall() = "<$tagName>$content</$tagName>"
+}
+
+abstract class ContainerNode<T : Node>(private val tagName: String) : Node {
     private val children = mutableListOf<T>()
 
     protected fun configureAndAddChild(
@@ -13,23 +20,37 @@ abstract class ContainerNode<T> : Node {
     ) = child.apply(action).also { children.add(it) }
 
     protected fun addChild(child: T) = children.add(child)
+
+    override fun marshall() = """
+        |<$tagName>
+        |${customContent()}
+        |${marshallChildren()}
+        |</$tagName>
+    """.trimMargin("|")
+
+    protected abstract fun customContent(): String
+
+    private fun marshallChildren() = children.joinToString(separator = "\n") { it.marshall() }
 }
 
-class Topic(val content: String) : Node
+class Topic(content: String) : ContentNode("p", content)
 
-class Section(index: Int) : ContainerNode<Topic>() {
+class Section(private val index: Int) : ContainerNode<Topic>("div") {
     operator fun String.unaryPlus() = addChild(Topic(this))
+    override fun customContent() = "<h3>Section $index</h3>"
 }
 
-class Module(val title: String) : ContainerNode<Section>() {
+class Module(private val title: String) : ContainerNode<Section>("div") {
 
     fun section(
         index: Int = 0,
         action: Section.() -> Unit
     ) = configureAndAddChild(Section(index), action)
+
+    override fun customContent() = "<h2>Module $title</h2>"
 }
 
-class Course(private val title: String) : ContainerNode<Module>() {
+class Course(private val title: String) : ContainerNode<Module>("html") {
 
     fun module(
         title: String = "default module title",
@@ -37,6 +58,8 @@ class Course(private val title: String) : ContainerNode<Module>() {
     ) = configureAndAddChild(Module(title), action)
 
     override fun toString() = "Course with title '$title'"
+
+    override fun customContent() = "<h1>Course $title</h1>"
 }
 
 fun course(
@@ -105,6 +128,7 @@ fun main(args: Array<String>) {
         }
     }
 
-    println(dsl1)
-    println(dsl2)
+    println(dsl1.marshall())
+    println("----------")
+    println(dsl2.marshall())
 }
