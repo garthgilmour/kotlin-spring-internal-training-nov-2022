@@ -2,10 +2,14 @@ package com.instil.dsl
 
 data class Module(val title: String)
 data class Course(val title: String) {
+    private val modules = mutableListOf<Module>()
+
     fun module(
         title: String = "default module title",
         action: Module.() -> Unit
-    )  = Module(title).apply(action)
+    ) = Module(title).apply(action).also { modules.add(it) }
+
+    override fun toString() = "Course with title '$title' and ${modules.size} modules"
 }
 
 // OLD VERSION - KEPT FOR ILLUSTRATION
@@ -27,10 +31,19 @@ fun main(args: Array<String>) {
         module {
 
         }
+        module {
+
+        }
     }
 
     val dsl2 = course("Intro To Kotlin") {
         module("Getting Started") {
+
+        }
+        module("Procedural Programming") {
+
+        }
+        module("Object Oriented Programming") {
 
         }
     }
