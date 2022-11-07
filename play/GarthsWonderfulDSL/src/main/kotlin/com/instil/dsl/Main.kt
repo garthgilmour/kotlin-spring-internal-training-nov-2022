@@ -1,6 +1,11 @@
 package com.instil.dsl
 
-class Section(index: Int)
+class Topic(val content: String)
+
+class Section(index: Int) {
+    private val topics = mutableListOf<Topic>()
+    operator fun String.unaryPlus() = topics.add(Topic(this))
+}
 
 data class Module(val title: String) {
     private val sections = mutableListOf<Section>()
@@ -40,12 +45,14 @@ fun main(args: Array<String>) {
     val dsl1 = course {
         module {
             section {
-
+                +"foo"
+                +"bar"
             }
         }
         module {
             section {
-
+                +"wibble"
+                +"wobble"
             }
         }
     }
@@ -53,26 +60,42 @@ fun main(args: Array<String>) {
     val dsl2 = course("Intro To Kotlin") {
         module("Getting Started") {
             section(0) {
-
+                +"installing"
+                +"creating projects"
             }
             section(1) {
-
+                +"saving"
+                +"running Gradle"
             }
         }
         module("Procedural Programming") {
             section(0) {
-
+                +"a"
+                +"b"
+                +"c"
             }
         }
         module("Object Oriented Programming") {
             section(0) {
-
+                +"a"
+                +"b"
+                +"c"
+                +"d"
             }
             section(1) {
-
+                +"a"
+                +"b"
+                +"c"
+                +"d"
+                +"e"
             }
             section(2) {
-
+                +"a"
+                +"b"
+                +"c"
+                +"d"
+                +"e"
+                +"f"
             }
         }
     }
