@@ -68,9 +68,7 @@ fun course(
     action: Course.() -> Unit
 ) = Course(title).apply(action)
 
-fun main(args: Array<String>) {
-    println("Examples of Kotlin DSLs")
-
+fun main() {
     val dsl1 = course {
         module {
             section {
@@ -99,36 +97,37 @@ fun main(args: Array<String>) {
         }
         module("Procedural Programming") {
             section(0) {
-                +"a"
-                +"b"
-                +"c"
+                +"variables"
+                +"conditionals"
+                +"iteration"
             }
         }
         module("Object Oriented Programming") {
             section(0) {
-                +"a"
-                +"b"
-                +"c"
-                +"d"
+                +"classes"
+                +"objects"
+                +"fields"
+                +"methods"
             }
             section(1) {
-                +"a"
-                +"b"
-                +"c"
-                +"d"
-                +"e"
+                +"abstraction"
+                +"encapsulation"
+                +"inheritance"
+                +"polymorphism"
+                +"realization"
             }
             section(2) {
-                +"a"
-                +"b"
-                +"c"
-                +"d"
-                +"e"
-                +"f"
+                +"abstract classes"
+                +"overriding methods"
+                +"operator overloading"
+                +"primary constructors"
+                +"secondary constructors"
+                +"static initialization"
             }
         }
     }
 
+    println("Examples of Kotlin DSLs")
     println(dsl1.marshall())
     println("----------")
     println(dsl2.marshall())
