@@ -1,17 +1,24 @@
 package com.instil.dsl
 
-fun course(title: String = "default title", action: () -> Unit) {
-    action()
+data class Course(val title: String)
+
+fun course(title: String = "default title", action: Course.() -> Unit): Course {
+    val course = Course(title)
+    course.apply(action)
+    return course
 }
 
 fun main(args: Array<String>) {
     println("Examples of Kotlin DSLs")
 
     val dsl1 = course {
-        println("In a training course with default title")
+        println("In the training course called $title")
     }
 
     val dsl2 = course("Intro To Kotlin") {
-        println("In a training course with bespoke title")
+        println("In the training course called $title")
     }
+
+    println(dsl1)
+    println(dsl2)
 }
