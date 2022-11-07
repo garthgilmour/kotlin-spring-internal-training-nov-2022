@@ -2,11 +2,17 @@ package com.instil.dsl
 
 data class Course(val title: String)
 
-fun course(title: String = "default title", action: Course.() -> Unit): Course {
-    val course = Course(title)
-    course.apply(action)
-    return course
-}
+// OLD VERSION - KEPT FOR ILLUSTRATION
+//fun course(title: String = "default title", action: Course.() -> Unit): Course {
+//    val course = Course(title)
+//    course.apply(action)
+//    return course
+//}
+
+fun course(
+    title: String = "default title",
+    action: Course.() -> Unit
+) = Course(title).apply(action)
 
 fun main(args: Array<String>) {
     println("Examples of Kotlin DSLs")
