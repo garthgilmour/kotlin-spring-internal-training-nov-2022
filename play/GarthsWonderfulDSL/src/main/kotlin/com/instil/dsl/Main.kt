@@ -1,38 +1,43 @@
 package com.instil.dsl
 
-class Topic(val content: String)
+interface Node {
 
-class Section(index: Int) {
-    private val topics = mutableListOf<Topic>()
-    operator fun String.unaryPlus() = topics.add(Topic(this))
 }
 
-data class Module(val title: String) {
-    private val sections = mutableListOf<Section>()
+abstract class ContainerNode<T> : Node {
+    private val children = mutableListOf<T>()
 
-    fun section (
+    protected fun configureAndAddChild(
+        child: T,
+        action: T.() -> Unit
+    ) = child.apply(action).also { children.add(it) }
+
+    protected fun addChild(child: T) = children.add(child)
+}
+
+class Topic(val content: String) : Node
+
+class Section(index: Int) : ContainerNode<Topic>() {
+    operator fun String.unaryPlus() = addChild(Topic(this))
+}
+
+class Module(val title: String) : ContainerNode<Section>() {
+
+    fun section(
         index: Int = 0,
         action: Section.() -> Unit
-    ) = Section(index).apply(action).also { sections.add(it) }
+    ) = configureAndAddChild(Section(index), action)
 }
 
-data class Course(val title: String) {
-    private val modules = mutableListOf<Module>()
+class Course(private val title: String) : ContainerNode<Module>() {
 
     fun module(
         title: String = "default module title",
         action: Module.() -> Unit
-    ) = Module(title).apply(action).also { modules.add(it) }
+    ) = configureAndAddChild(Module(title), action)
 
-    override fun toString() = "Course with title '$title' and ${modules.size} modules"
+    override fun toString() = "Course with title '$title'"
 }
-
-// OLD VERSION - KEPT FOR ILLUSTRATION
-//fun course(title: String = "default title", action: Course.() -> Unit): Course {
-//    val course = Course(title)
-//    course.apply(action)
-//    return course
-//}
 
 fun course(
     title: String = "default course title",
