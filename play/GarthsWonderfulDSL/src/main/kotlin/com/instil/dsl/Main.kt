@@ -1,6 +1,16 @@
 package com.instil.dsl
 
-data class Module(val title: String)
+class Section(index: Int)
+
+data class Module(val title: String) {
+    private val sections = mutableListOf<Section>()
+
+    fun section (
+        index: Int = 0,
+        action: Section.() -> Unit
+    ) = Section(index).apply(action).also { sections.add(it) }
+}
+
 data class Course(val title: String) {
     private val modules = mutableListOf<Module>()
 
@@ -29,22 +39,41 @@ fun main(args: Array<String>) {
 
     val dsl1 = course {
         module {
+            section {
 
+            }
         }
         module {
+            section {
 
+            }
         }
     }
 
     val dsl2 = course("Intro To Kotlin") {
         module("Getting Started") {
+            section(0) {
 
+            }
+            section(1) {
+
+            }
         }
         module("Procedural Programming") {
+            section(0) {
 
+            }
         }
         module("Object Oriented Programming") {
+            section(0) {
 
+            }
+            section(1) {
+
+            }
+            section(2) {
+
+            }
         }
     }
 
