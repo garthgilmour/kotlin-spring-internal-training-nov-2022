@@ -54,13 +54,13 @@ class StaffService(private val staff: List<Employee>) {
             ok(result)
         }
     }
-    
+
     private fun filterStaff(predicate: (Employee) -> Boolean): ResponseEntity<List<Employee>> {
         val results = staff.filter(predicate)
         return if (results.isEmpty()) {
             notFound().build()
         } else {
-            ok(staff)
+            ok(results)
         }
     }
 }
