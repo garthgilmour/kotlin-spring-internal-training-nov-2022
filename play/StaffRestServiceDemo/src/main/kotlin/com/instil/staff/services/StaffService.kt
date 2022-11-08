@@ -11,15 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/staff")
-class StaffService {
-    private val staff = listOf(
-        Employee("Jane", 30, 20000.0, IT),
-        Employee("Fred", 31, 30000.0, HR),
-        Employee("Mary", 30, 40000.0, Sales),
-        Employee("Bary", 32, 50000.0, IT),
-        Employee("Lucy", 30, 60000.0, HR),
-        Employee("Dave", 33, 70000.0, Sales)
-    )
+class StaffService(private val staff: List<Employee>) {
 
     @GetMapping(produces=[APPLICATION_JSON_VALUE])
     fun allStaff() = staff
