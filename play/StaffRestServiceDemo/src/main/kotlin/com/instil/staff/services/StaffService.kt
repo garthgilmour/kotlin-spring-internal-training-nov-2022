@@ -16,55 +16,51 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/staff")
 class StaffService(private val staff: List<Employee>) {
 
-    @GetMapping(produces=[APPLICATION_JSON_VALUE])
-    fun allStaff() = if(staff.isEmpty()) {
+    @GetMapping(produces = [APPLICATION_JSON_VALUE])
+    fun allStaff() = if (staff.isEmpty()) {
         notFound().build()
     } else {
         ok(staff)
     }
 
     @GetMapping(
-        value=["/byAge/{age}"],
-        produces=[APPLICATION_JSON_VALUE]
+        value = ["/byAge/{age}"],
+        produces = [APPLICATION_JSON_VALUE]
     )
-    fun staffByAge(@PathVariable age: Int): ResponseEntity<List<Employee>> {
-        val results = staff.filter {
-            it.age == age
-        }
-        return if(results.isEmpty()) {
-            notFound().build()
-        } else {
-            ok(staff)
-        }
-    }
+    fun staffByAge(@PathVariable age: Int) = filterStaff { it.age == age }
 
     @GetMapping(
-        value=["/byDept/{department}"],
-        produces=[APPLICATION_JSON_VALUE]
+        value = ["/byDept/{department}"],
+        produces = [APPLICATION_JSON_VALUE]
     )
-    fun staffByDept(@PathVariable department: Department): ResponseEntity<List<Employee>> {
-        val results = staff.filter {
-            it.department == department
-        }
-        return if(results.isEmpty()) {
-            notFound().build()
-        } else {
-            ok(staff)
-        }
-    }
-    @GetMapping(
-        value=["/byName/{name}"],
-        produces=[APPLICATION_JSON_VALUE]
-    )
-    fun staffByName(@PathVariable name: String): ResponseEntity<Employee> {
-        val result = staff.firstOrNull {
-            it.name.equals(name, true)
-        }
+    fun staffByDept(
+        @PathVariable department: Department
+    ) = filterStaff { it.department == department }
 
-        return if(result == null) {
+    @GetMapping(
+        value = ["/byName/{name}"],
+        produces = [APPLICATION_JSON_VALUE]
+    )
+    fun staffByName(@PathVariable name: String) = findStaff {
+        it.name.equals(name, true)
+    }
+
+    private fun findStaff(predicate: (Employee) -> Boolean): ResponseEntity<Employee> {
+        val result = staff.firstOrNull(predicate)
+
+        return if (result == null) {
             notFound().build()
         } else {
             ok(result)
+        }
+    }
+    
+    private fun filterStaff(predicate: (Employee) -> Boolean): ResponseEntity<List<Employee>> {
+        val results = staff.filter(predicate)
+        return if (results.isEmpty()) {
+            notFound().build()
+        } else {
+            ok(staff)
         }
     }
 }
